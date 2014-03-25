@@ -1,0 +1,4 @@
+ifdown dna0
+rmmod ixgbe && rmmod pf_ring
+modprobe ixgbe
+ifup p1p1
