@@ -1,2 +1,2 @@
-cp /workspace/na62-farm2/Debug/na62-farm2 /usr/local/bin/
+cp /workspace/na62-farm/Debug/na62-farm /usr/local/bin/na62-farm2
 
