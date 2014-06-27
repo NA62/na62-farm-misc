@@ -1,11 +1,13 @@
 #!/bin/bash
 
 PF_RING_PATH=/performance/PF_RING
-DRIVER_PATH=$PF_RING_PATH/drivers/DNA/ixgbe-3.18.7-DNA/src
+DRIVER_PATH=$PF_RING_PATH/drivers/DNA/ixgbe-3.21.2-DNA/src
 set_irq_affinity=/performance/set_irq_affinity.sh
 
 # Configure here the network interfaces to activate
 IF[0]=dna0
+
+numberOfQueues=3
 
 #service udev start
 
@@ -17,28 +19,26 @@ rmmod pf_ring
 insmod $PF_RING_PATH/kernel/pf_ring.ko transparent_mode=2 quick_mode=0 min_num_slots=1073741824  
 
 # load ixgbe with several queues
-insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=4,4,4,4 mtu=9000
+insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=$numberOfQueues,$numberOfQueues,$numberOfQueues,$numberOfQueues mtu=9000
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1
 
 # As many queues as the number of processors
-#insmod $DRIVER_PATH/ixgbe.ko RSS=0,0,0,0
+#insmod $DRIVER_PATH/ixgbe.ko RSS=0,0,0,0 mtu=9000
 
 # Disable multqiqueue
-#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 mtu=9000
 
 # Configure the number of TX and RX slots
 #insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 num_rx_slots=32768 num_tx_slots=4096
 
 # Enable 16 queues
-#insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=16,16,16,16
+#insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=16,16,16,16 mtu=9000
 
 # Enable max number of hw filters
-#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 FdirPballoc=3,3,3,3
-
-# Set a large MTU (jumbo frame)
-#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 mtu=9000
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 FdirPballoc=3,3,3,3 mtu=9000
 
 # Select the CPU of the NUMA node where per-adapter memory will be allocated
-#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 numa_cpu_affinity=0,0,0,0
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 numa_cpu_affinity=0,0,0,0 mtu=9000
 
 sleep 1
 
@@ -50,7 +50,7 @@ do
     continue
   fi
   printf "Configuring %s\n" "${IF[index]}"
-  ifconfig ${IF[index]} up
+  ifup ${IF[index]}
   sleep 1
   bash $set_irq_affinity ${IF[index]}
 
