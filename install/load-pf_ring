@@ -16,7 +16,7 @@ rmmod ixgbe
 rmmod pf_ring
 
 # load pf_ring
-insmod $PF_RING_PATH/kernel/pf_ring.ko transparent_mode=2 quick_mode=0 min_num_slots=1073741824  
+insmod $PF_RING_PATH/kernel/pf_ring.ko transparent_mode=2 quick_mode=0 min_num_slots=1073741824 enable_ip_defrag=0
 
 # load ixgbe with several queues
 insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=$numberOfQueues,$numberOfQueues,$numberOfQueues,$numberOfQueues mtu=9000

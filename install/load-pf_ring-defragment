@@ -1,0 +1,65 @@
+#!/bin/bash
+
+PF_RING_PATH=/performance/PF_RING
+DRIVER_PATH=$PF_RING_PATH/drivers/DNA/ixgbe-3.21.2-DNA/src
+set_irq_affinity=/performance/set_irq_affinity.sh
+
+# Configure here the network interfaces to activate
+IF[0]=dna0
+
+numberOfQueues=3
+
+#service udev start
+
+# Remove old modules (if loaded)
+rmmod ixgbe
+rmmod pf_ring
+
+# load pf_ring
+insmod $PF_RING_PATH/kernel/pf_ring.ko transparent_mode=2 quick_mode=0 min_num_slots=1073741824 enable_ip_defrag=1
+
+# load ixgbe with several queues
+insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=$numberOfQueues,$numberOfQueues,$numberOfQueues,$numberOfQueues mtu=9000
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1
+
+# As many queues as the number of processors
+#insmod $DRIVER_PATH/ixgbe.ko RSS=0,0,0,0 mtu=9000
+
+# Disable multqiqueue
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 mtu=9000
+
+# Configure the number of TX and RX slots
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 num_rx_slots=32768 num_tx_slots=4096
+
+# Enable 16 queues
+#insmod $DRIVER_PATH/ixgbe.ko MQ=1,1,1,1 RSS=16,16,16,16 mtu=9000
+
+# Enable max number of hw filters
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 FdirPballoc=3,3,3,3 mtu=9000
+
+# Select the CPU of the NUMA node where per-adapter memory will be allocated
+#insmod $DRIVER_PATH/ixgbe.ko RSS=1,1,1,1 numa_cpu_affinity=0,0,0,0 mtu=9000
+
+sleep 1
+
+killall irqbalance 
+
+for index in 0 1 2 3
+do
+  if [ -z ${IF[index]} ]; then
+    continue
+  fi
+  printf "Configuring %s\n" "${IF[index]}"
+  ifup ${IF[index]}
+  sleep 1
+  bash $set_irq_affinity ${IF[index]}
+
+  # Flow Control automatically disabled by the driver (no need to use the following commands)
+  #ethtool -A ${IF[index]} autoneg off
+  #ethtool -A ${IF[index]} rx off
+  #ethtool -A ${IF[index]} tx off
+  #ethtool -s ${IF[index]} speed 10000
+
+  # Enable n-tuple hw filters
+  #ethtool -K ${IF[index]} ntuple on
+done

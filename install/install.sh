@@ -7,7 +7,7 @@ yum -y install openmotif-devel libstdc++.i686
 #for fmc
 yum -y install ipmitool ncurses-libs.i686
 
-yum -y install htop bwm-ng
+yum -y install zeromq htop bwm-ng
 
 doUntar=1
 
@@ -55,20 +55,6 @@ function installBoost {
 	./bjam install --prefix=/usr/local
 	cd ..
 }
-function installDim {
-	rpm -ivh dim*
-	rpm -ivh FMC*
-
-#	unzip -a dim*.zip
-#	cd dim*
-#	tcsh
-#	setenv OS Linux
-#	source .setup
-#	gmake all
-#	cp dim/* /usr/local/include
-#	cp linux/*[ao] /usr/local/lib
-#	cp linux/*[^ao] /usr/local/include
-}
 
 function installJemalloc {
 	if [ $doUntar -gt 0 ]
@@ -83,13 +69,26 @@ function installJemalloc {
 	cd ..
 }
 
-installTCMalloc &
-installBoost &
-installDim &
-#installJemalloc &
+function installGlog {
+        if [ $doUntar -gt 0 ]
+        then
+            	tar -xvzf glog*.tar.gz
+		cd glog*
+		./configure
+		make -j
+		cd ..
+        fi
 
-./installPF_RRING.sh &
+        cd glog*
+        make install
+        cd ..
+}
+
+installTCMalloc #&
+installBoost #&
+#installJemalloc #&
+
+./installPF_RRING.sh #&
 
 echo /usr/local/lib >> /etc/ld.so.conf.d/na62.conf
-
 ldconfig

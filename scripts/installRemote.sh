@@ -7,7 +7,7 @@ fi
 
 hostname=$1
 
-ssh-copy-id root@$hostname
+#ssh-copy-id root@$hostname
 
 scp installFromScratch.sh root@${hostname}:/root
 
