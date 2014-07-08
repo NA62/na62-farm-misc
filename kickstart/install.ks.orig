@@ -1,0 +1,192 @@
+##############################################################################
+#
+# Example KickStart file for SLC6 installations
+#
+# Important note: this file is intended as an example only, and users are 
+# expected to tailor it to their needs. In particular, users should:
+#   - review the partition table
+#   - set an encrypted root password
+#   - for 32-bit installations, replace the occurences of "x86_64" by "i386"
+#
+# To upload the Kickstart file to the AIMS installation service, run:
+#
+#     /usr/bin/aims2client addhost --hostname <hostname> --kickstart kickstart-example.ks --kopts "text network ks ksdevice=bootif latefcload" --pxe --name slc6X_x86_64
+#
+##############################################################################
+
+# Text mode or graphical mode?
+cmdline
+
+# Install or upgrade?
+install
+
+# installation path
+url --url=http://linuxsoft.cern.ch/cern/slc6X/x86_64/
+
+# Language support
+lang en_US.UTF8
+
+# Keyboard
+keyboard us
+
+# Network
+network --onboot yes --bootproto dhcp
+
+# Root password - change to a real password (use "grub-md5-crypt" to get the crypted version)
+rootpw --iscrypted $1$oXGUl1$K0KiUL7VZ0FeMTYhAQ2rN0
+
+# Firewall openings for SSH and AFS
+firewall --service=ssh --port=7001:udp
+
+# Authconfig
+authconfig --useshadow --enablekrb5
+
+# SElinux
+selinux --enforcing
+
+# Timezone
+timezone --utc Europe/Zurich
+
+# Bootloader
+bootloader --location=mbr --driveorder=sda
+zerombr
+
+# Partition table
+clearpart --linux --drives=sda
+
+part /boot --size=1024 --ondisk sda
+part pv.01 --size=1    --ondisk sda --grow
+volgroup vg1 pv.01
+logvol /    --vgname=vg1 --size=10000  --name=root
+logvol swap --vgname=vg1 --recommended --name=swap --fstype=swap
+ignoredisk --only-use=sda
+
+# XWindows configuration information
+xconfig --startxonboot
+
+# Installation logging level
+logging --level=info
+
+# Reboot after installation?
+reboot 
+
+##############################################################################
+#
+# packages part of the KickStart configuration file
+#
+##############################################################################
+%packages
+#
+# Use package groups from "Software Development Workstation (CERN Recommended Setup)"
+# as defined in /afs/cern.ch/project/linux/cern/slc6X/i386/build/product.img/installclasses/slc.py
+#
+@ base 
+@ core 
+@ debugging 
+@ cern-addons 
+@ cern-addons-x11
+@ directory-client 
+@ java-platform 
+@ network-file-system-client
+@ performance 
+@ perl-runtime 
+@ server-platform
+@ fonts 
+@ print-client 
+@ console-internet 
+@ hardware-monitoring
+@ basic-desktop 
+@ desktop-debugging 
+@ desktop-platform
+@ general-desktop 
+@ graphical-admin-tools 
+@ input-methods
+@ legacy-x 
+@ x11 
+@ internet-browser 
+@ internet-applications 
+@ graphics 
+@ emacs 
+@ tex
+@ remote-desktop-clients 
+@ virtualization 
+@ virtualization-client
+@ scientific 
+@ office-suite 
+@ virtualization-platform
+@ desktop-platform-devel 
+@ development 
+@ eclipse
+@ server-platform-devel 
+@ technical-writing
+@ additional-devel 
+@ openafs-client
+
+%end
+
+##############################################################################
+#
+# post installation part of the KickStart configuration file
+#
+##############################################################################
+%post
+#
+# This section describes all the post-Anaconda steps to fine-tune the installation
+#
+
+# redirect the output to the log file
+exec >/root/ks-post-anaconda.log 2>&1
+# show the output on the 7th console
+tail -f /root/ks-post-anaconda.log >/dev/tty7 &
+# changing to VT 7 that we can see what's going on....
+/usr/bin/chvt 7
+
+#
+# Set the correct time
+#
+/usr/sbin/ntpdate -bus ip-time-1 ip-time-2
+/sbin/clock --systohc
+
+#
+# AIMS (CERN)
+# Tell our installation server the installation is over.
+# otherwise PXE installs will loop all-over-again
+# If you are not using PXE install: just ignore this section
+#
+/usr/bin/wget -O /root/aims2-deregistration.txt http://linuxsoft.cern.ch/aims2server/aims2reboot.cgi?pxetarget=localboot
+
+#
+# Save the Kickstart file for future reference
+#
+# Note: this assumes that the Kickstart-file uploaded to AIMS is called <hostname>.ks
+#
+shost=`/bin/hostname -s`
+/usr/bin/wget -O /root/${shost}.ks --quiet http://linuxsoft.cern.ch/aims2server/aims2ks.cgi\?${shost}.ks
+
+#
+# Update the RPMs
+#
+/usr/bin/yum update -y --skip-broken
+
+#
+# Configuration steps, based on
+# http://cern.ch/linux/scientific6/docs/install.shtml#manualpostinst
+#
+/usr/sbin/lcm --configure --all
+
+# Add AFS client to system startup, and start it:
+/sbin/chkconfig afs on
+/sbin/service afs start
+
+# Configure and start automatic update system:
+/sbin/chkconfig --add yum-autoupdate
+/sbin/service yum-autoupdate start
+
+# Create accounts for LANdb-registered responsible and main users, give responsible
+# root access, configure relevant printers
+/usr/sbin/cern-config-users --setup-all
+
+# Done
+exit 0
+
+%end
