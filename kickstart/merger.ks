@@ -155,8 +155,9 @@ shost=`/bin/hostname -s`
 /usr/sbin/lcm --configure --all
 
 # Add AFS client to system startup, and start it:
-/sbin/chkconfig afs on
-/sbin/service afs start
+#/sbin/chkconfig afs on
+#/sbin/service afs start
+/usr/sbin/lcm --configure afsclt
 
 # Configure and start automatic update system:
 #/sbin/chkconfig --add yum-autoupdate

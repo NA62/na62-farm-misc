@@ -1,0 +1,13 @@
+read -p "User: " user; echo
+stty -echo
+read -p "Password: " password; echo
+stty echo
+
+for i in `seq 10 30`
+do
+	echo "starting na62farm$i"
+	ipmitool -H na62farm$i-ipmi -U $user -P $password power on
+done
+
+#echo "starting na62merger"
+#ipmitool -H na62merger-ipmi -U root -P $password power on
