@@ -1,5 +1,6 @@
 #!/bin/bash
-
+installPf_ring=0
+installFarm=0
 DIM_DNS_NODE=lkrpn2
 
 scriptDir=/workspace/na62-farm-misc/scripts/
@@ -13,7 +14,6 @@ cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -
 mv -f /etc/sysconfig/yum-autoupdate.tmp /etc/sysconfig/yum-autoupdate
 /sbin/chkconfig --add yum-autoupdate
 /sbin/service yum-autoupdate start
-
 hostname=`hostname`
 PCID=`expr match "$hostname" 'na62farm\([0-9]*\).*'`
 
@@ -29,8 +29,10 @@ mount -a
 
 
 # configure network devices
-echo -ne "DEVICE=dna0\nHWADDR=" > /etc/sysconfig/network-scripts/ifcfg-dna0
-cat /sys/class/net/dna0/address >> /etc/sysconfig/network-scripts/ifcfg-dna0
+if [ $installPf_ring -gt 0 ]
+then
+	echo -ne "DEVICE=dna0\nHWADDR=" > /etc/sysconfig/network-scripts/ifcfg-dna0
+	cat /sys/class/net/dna0/address >> /etc/sysconfig/network-scripts/ifcfg-dna0
 echo -e "NM_CONTROLLED=yes
 ONBOOT=no
 BOOTPROTO=static
@@ -45,6 +47,7 @@ MTU=9000" >> /etc/sysconfig/network-scripts/ifcfg-dna0
 cat /etc/sysconfig/network-scripts/ifcfg-eth2 | grep "HWADDR=" >>/etc/sysconfig/network-scripts/ifcfg-dna0 
 
 echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev dna0" >> /etc/sysconfig/network-scripts/ifup-routes
+fi
 
 #
 # Configure Intel compiler ang gcc 4.9
@@ -57,10 +60,18 @@ echo "source /afs/cern.ch/sw/lcg/contrib/gcc/4.9.0/x86_64-slc6/setup.sh" >> /roo
 #
 # Install the farm program (this takes a long time, mainly because of extracting root -> do it on shared memory)
 #
-cp -a /workspace/na62-farm-misc/install/ /dev/shm/
-cd /dev/shm/install
-./install.sh
-rm -rf /dev/shm/install
+if [ $installFarm -gt 0 ]
+then
+	cp -a /workspace/na62-farm-misc/install/ /dev/shm/
+	cd /dev/shm/install
+	./install.sh
+	rm -rf /dev/shm/install
+	#
+	# Store the release binaries locally
+	#
+	cp /workspace/na62-farm/Release/na62-farm /usr/local/bin/
+	cp /workspace/na62-farm-dim-interface/Release/na62-farm-dim-interface /usr/local/bin/
+fi
 
 #
 # install scripts and cronjobs
@@ -71,11 +82,6 @@ echo "source /etc/sysconfig/dim" >> /root/.bashrc
 ln -s /workspace/na62-farm/na62-farm.cfg /etc
 ln -s /workspace/na62-farm-dim-interface/na62-farm-dim.conf /etc
 
-#
-# Store the release binaries locally
-#
-cp /workspace/na62-farm/Release/na62-farm /usr/local/bin/
-cp /workspace/na62-farm-dim-interface/Release/na62-farm-dim-interface /usr/local/bin/
 
 cp $scriptDir/na62farm.autostart /root/
 crontab $scriptDir/crontab.na62farm 
