@@ -155,9 +155,10 @@ shost=`/bin/hostname -s`
 /usr/sbin/lcm --configure --all
 
 # Add AFS client to system startup, and start it:
-#/sbin/chkconfig afs on
-#/sbin/service afs start
+restorecon /afs
 /usr/sbin/lcm --configure afsclt
+/sbin/chkconfig afs on
+/sbin/service afs start
 
 # Configure and start automatic update system:
 #/sbin/chkconfig --add yum-autoupdate
@@ -180,14 +181,17 @@ yum --nogpgcheck -y install dim* FMC
 
 
 #################### SSH Keys ##############
-# generate new key
-ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ""
-
 #enable logging from farm2 to this machine
+# generate new key
+mkdir /root/.ssh 
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA1j3kGkjAHTrLtblQsWztmHkALeN3mE9yC9qGzjjICBYm4Dal9fMS5rY+CPAcHr9si5I+bqDaoU7mWFbCIKYwmS4SsSMzneo9tL3hehQdDzaV9iygXZfgFxD27o+iq3ykOJI1JwnFX3SuWdRezfHRultl2MKFZOg1pOb/MjD+NFOiwVR2w3MUdktGuVhTLoK2cWFxPZ8WjcB58ktGIGuoO+JRtQscA2MWmZD8eqqzwaDa0wZ510myYfUW4pT5fZ6BCmLYGs98wBiOJI0RIt8KnxGwcMavUgscqUQpqOSIM44ermAd/FNEMgTV4sUhBy4XLDrxgFgFn286q3oIsf+s3w== root@na62farm2.cern.ch" >> /root/.ssh/authorized_keys
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAoHZUgnc7saF19XHMkz2f1NN3qAxTO99wdOGGZ5v+zENsH+l94buvx4lSVm/agVGAVlQ40RwHom4os25mzITXzHb2UVAUTNte/NO7N8nPG0ug69mhbUOtYiFHxA6RW1ABYqLtJ91Hwc3ZIsxUVnoNLiLqSgPtmnqmkW4jd+4fbkQL1Af2Ly2f6HKt6qbulmX0fZRdb/CAjmoOpfHX4P4uHPi6r0kSBG0SKgi3tWVynDCaHiZWPlCf1757OSs1N7Rs67Hhuy2aj1dO6e5AdBn+I5E7JyDOpoTr9nbJwhE2vIntHPdvdLS4v/Jf3J6od56GuKMxEuKc2aq75mpsdqyF8Q== kunzej@na62farmu2.cern.ch" >> /root/.ssh/authorized_keys
 
 ###########################################
+
+############# sudo rights (the cern-config-users seems not to work properly)
+echo "kunzej  ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
+
 
 # Done
 shutdown -r now

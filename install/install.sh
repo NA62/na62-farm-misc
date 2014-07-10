@@ -1,15 +1,19 @@
 #!/bin/bash
 PF_RING_PATH=/performance/PF_RING
-
-yum -y install gcc-c++ kernel-devel flex byacc
-# for dim:
-yum -y install openmotif-devel libstdc++.i686 
-#for fmc
-yum -y install ipmitool ncurses-libs.i686
-
-yum -y install zeromq htop bwm-ng
-
 doUntar=1
+installDependencies=1
+if [ $installDependencies -gt 0 ]
+then
+	yum -y install gcc-c++ kernel-devel flex byacc
+	# for dim:
+	yum -y install openmotif-devel libstdc++.i686 
+	#for fmc
+	yum -y install ipmitool ncurses-libs.i686
+
+	yum -y install zeromq zeromq-devel htop bwm-ng
+fi
+
+
 
 function installUnwind {
 	if [ $doUntar -gt 0 ]
@@ -84,6 +88,24 @@ function installGlog {
         cd ..
 }
 
+function installZMQ {
+        if [ $doUntar -gt 0 ]
+        then
+            	tar -xvzf zeromq*.tar.gz
+		cd zeromq*
+		./configure
+		make -j
+		cd ..
+        fi
+
+        cd zeromq*
+        make install
+        cd ..
+	cp zmq.hpp /usr/local/include/
+}
+
+installZMQ
+installGlog 
 installTCMalloc #&
 installBoost #&
 #installJemalloc #&

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+compile=0
 yum install -y numactl-devel
 
 PF_RING_PATH=/performance/PF_RING
@@ -13,23 +13,39 @@ cp set_irq_affinity.sh $SCRIPT_PATH
 #svn co https://svn.ntop.org/svn/ntop/trunk/PF_RING $PF_RING_PATH
 
 cd $PF_RING_PATH
-make clean 
+if [ $compile -gt 0 ]
+then
+	make clean 
+fi
 
 cd kernel
-make -j
+if [ $compile -gt 0 ]
+then
+	make -j
+fi
 make install
 
 cd ../drivers/DNA/ixgbe*/src
-make -j
+if [ $compile -gt 0 ]
+then
+	make -j
+fi
 
 cd $PF_RING_PATH/userland/lib
 ./configure
-make -j
+if [ $compile -gt 0 ]
+then
+	make -j
+fi
+
 make install
 
 cd $PF_RING_PATH/userland/libpcap
-./configure
-make -j
+if [ $compile -gt 0 ]
+then
+	./configure
+	make -j
+fi
 make install
 
 cp pcap-int.h /usr/local/include/
