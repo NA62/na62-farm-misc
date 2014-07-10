@@ -10,7 +10,7 @@ then
 	#for fmc
 	yum -y install ipmitool ncurses-libs.i686
 
-	yum -y install zeromq zeromq-devel htop bwm-ng
+	yum -y install htop bwm-ng
 fi
 
 
