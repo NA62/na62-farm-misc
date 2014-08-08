@@ -47,6 +47,8 @@ MTU=9000" >> /etc/sysconfig/network-scripts/ifcfg-dna0
 cat /etc/sysconfig/network-scripts/ifcfg-eth2 | grep "HWADDR=" >>/etc/sysconfig/network-scripts/ifcfg-dna0 
 
 echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev dna0" >> /etc/sysconfig/network-scripts/ifup-routes
+echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev eth2" >> /etc/sysconfig/network-scripts/ifup-routes
+
 fi
 
 #
@@ -94,4 +96,6 @@ chkconfig --add fmc
 chkconfig fmc on
 service fmc start
 
+# Disable iptables
+chkconfig --level 12345 iptables off
 

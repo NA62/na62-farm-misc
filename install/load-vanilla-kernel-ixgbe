@@ -1,4 +1,8 @@
+numberOfQueues=3
 ifdown dna0
 rmmod ixgbe && rmmod pf_ring
-modprobe ixgbe
-ifup p1p1
+insmod  /performance/ixgbe-3.21.2/src/ixgbe.ko RSS=$numberOfQueues,$numberOfQueues,$numberOfQueues,$numberOfQueues
+ifup eth2
+
+route del default
+route add default gw 10.194.20.65

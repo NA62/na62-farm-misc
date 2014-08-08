@@ -1,7 +1,7 @@
 #!/bin/bash
 PF_RING_PATH=/performance/PF_RING
 doUntar=1
-installDependencies=1
+installDependencies=0
 if [ $installDependencies -gt 0 ]
 then
 	yum -y install gcc-c++ kernel-devel flex byacc
@@ -104,8 +104,9 @@ function installZMQ {
 	cp zmq.hpp /usr/local/include/
 }
 
-installZMQ
 installGlog 
+exit
+installZMQ
 installTCMalloc #&
 installBoost #&
 #installJemalloc #&
