@@ -7,7 +7,10 @@ scriptDir=/workspace/na62-farm-misc/scripts/
 
 yum -y update
 yum -y remove NetworkManager
-yum -y install htop bwm-ng
+
+#tools for gperftool and other
+yum -y install htop bwm-ng graphviz gv
+
 
 # change autoupdate config so that it will only check for updates
 cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -e 's/YUMUPDATE=1/YUMUPDATE=0/g' | sed -e 's/YUMMAILTO="root"/YUMMAILTO="kunzej@cern.ch"/g' > /etc/sysconfig/yum-autoupdate.tmp
@@ -79,6 +82,7 @@ fi
 # install scripts and cronjobs
 #
 echo "export DIM_DNS_NODE=$DIM_DNS_NODE" > /etc/sysconfig/dim
+echo "export DIM_HOST_NODE=$hostname" >> /etc/sysconfig/dim
 echo "source /etc/sysconfig/dim" >> /root/.bashrc
 
 ln -s /workspace/na62-farm/na62-farm.cfg /etc

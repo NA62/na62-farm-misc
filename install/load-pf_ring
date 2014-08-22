@@ -7,7 +7,7 @@ set_irq_affinity=/performance/set_irq_affinity.sh
 # Configure here the network interfaces to activate
 IF[0]=dna0
 
-numberOfQueues=3
+numberOfQueues=8
 
 #service udev start
 
