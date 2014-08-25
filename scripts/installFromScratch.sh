@@ -1,6 +1,6 @@
 #!/bin/bash
-installPf_ring=0
-installFarm=0
+installPf_ring=1
+installFarm=1
 DIM_DNS_NODE=lkrpn2
 
 scriptDir=/workspace/na62-farm-misc/scripts/
@@ -95,6 +95,3 @@ chkconfig --level 12345 iptables off
 
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
-
-cd $scriptDir/../install
-./install.sh

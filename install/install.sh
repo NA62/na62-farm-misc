@@ -56,7 +56,7 @@ function installBoost {
 	fi
 
 	cd boost*
-	./bjam install --prefix=/usr/local
+	./b2 -j 32 install --prefix=/usr/local
 	cd ..
 }
 
@@ -105,10 +105,9 @@ function installZMQ {
 }
 
 installGlog 
-exit
 installZMQ
-installTCMalloc #&
-installBoost #&
+installTCMalloc
+installBoost
 #installJemalloc #&
 
 ./installPF_RRING.sh #&
