@@ -57,11 +57,11 @@ echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev eth2" >> /etc/sysconfig/netw
 fi
 
 #
-# Configure Intel compiler ang gcc 4.9
+# Install .bashrc
 #
-source /afs/cern.ch/sw/IntelSoftware/linux/all-setup.sh
-source /afs/cern.ch/sw/lcg/contrib/gcc/4.9.0/x86_64-slc6/setup.sh
+rm /root/.bashrc
 ln -s $scriptDir/.bashrc /root/.bashrc
+source /root/.bashrc
 
 #
 # Install the farm program (this takes a long time, mainly because of extracting root -> do it on shared memory)
@@ -86,9 +86,6 @@ ln -s /workspace/na62-farm-dim-interface/na62-farm-dim.conf /etc
 # Copy all etc files
 yes | cp -af $scriptDir/etc/* /etc/
 
-chkconfig --add na62-startup
-chkconfig na62-startup on
-
 chkconfig --add fmc
 chkconfig fmc on
 service fmc start
@@ -98,3 +95,6 @@ chkconfig --level 12345 iptables off
 
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
+
+cd $scriptDir/../install
+./install.sh
