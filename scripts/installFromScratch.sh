@@ -92,6 +92,7 @@ service fmc start
 
 # Disable iptables
 chkconfig --level 12345 iptables off
+service iptables stop
 
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
