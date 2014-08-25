@@ -1,0 +1,11 @@
+read -p "on/off/reset: " power; echo
+read -p "User: " user; echo
+stty -echo
+read -p "Password: " password; echo
+stty echo
+
+for i in `seq 10 30`
+do
+	echo "na62farm$i:"
+	ipmitool -H na62farm$i-ipmi -U $user -P $password power $power
+done

@@ -13,10 +13,12 @@ yum -y install htop bwm-ng graphviz gv
 
 
 # change autoupdate config so that it will only check for updates
-cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -e 's/YUMUPDATE=1/YUMUPDATE=0/g' | sed -e 's/YUMMAILTO="root"/YUMMAILTO="kunzej@cern.ch"/g' > /etc/sysconfig/yum-autoupdate.tmp
+cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -e 's/YUMUPDATE=1/YUMUPDATE=0/g' | sed -e 's/YUMMAIL=1/YUMMAIL=0/g' | sed -e 's/YUMMAILTO="root"/YUMMAILTO="kunzej@cern.ch"/g' > /etc/sysconfig/yum-autoupdate.tmp
 mv -f /etc/sysconfig/yum-autoupdate.tmp /etc/sysconfig/yum-autoupdate
 /sbin/chkconfig --add yum-autoupdate
 /sbin/service yum-autoupdate start
+
+
 hostname=`hostname`
 PCID=`expr match "$hostname" 'na62farm\([0-9]*\).*'`
 
@@ -58,9 +60,8 @@ fi
 # Configure Intel compiler ang gcc 4.9
 #
 source /afs/cern.ch/sw/IntelSoftware/linux/all-setup.sh
-echo "source /afs/cern.ch/sw/IntelSoftware/linux/all-setup.sh" >> /root/.bashrc
 source /afs/cern.ch/sw/lcg/contrib/gcc/4.9.0/x86_64-slc6/setup.sh
-echo "source /afs/cern.ch/sw/lcg/contrib/gcc/4.9.0/x86_64-slc6/setup.sh" >> /root/.bashrc
+ln -s $scriptDir/.bashrc /root/.bashrc
 
 #
 # Install the farm program (this takes a long time, mainly because of extracting root -> do it on shared memory)
@@ -78,21 +79,13 @@ then
 	cp /workspace/na62-farm-dim-interface/Release/na62-farm-dim-interface /usr/local/bin/
 fi
 
-#
-# install scripts and cronjobs
-#
-echo "export DIM_DNS_NODE=$DIM_DNS_NODE" > /etc/sysconfig/dim
-echo "export DIM_HOST_NODE=$hostname" >> /etc/sysconfig/dim
-echo "source /etc/sysconfig/dim" >> /root/.bashrc
-
 ln -s /workspace/na62-farm/na62-farm.cfg /etc
 ln -s /workspace/na62-farm-dim-interface/na62-farm-dim.conf /etc
 
 
-cp $scriptDir/na62farm.autostart /root/
-crontab $scriptDir/crontab.na62farm 
+# Copy all etc files
+yes | cp -af $scriptDir/etc/* /etc/
 
-cp $scriptDir/etc/init.d/na62-startup /etc/init.d/
 chkconfig --add na62-startup
 chkconfig na62-startup on
 
@@ -103,3 +96,5 @@ service fmc start
 # Disable iptables
 chkconfig --level 12345 iptables off
 
+# generate DIM start script used by FMC
+ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin

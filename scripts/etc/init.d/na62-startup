@@ -21,4 +21,3 @@
 
 ssh -f na62farmui1 -L 2000:github.com:22 -N
 ssh -f na62farmui1 -L 2001:etap-git.physik.uni-mainz.de:22 -N
-/root/na62farm.autostart
