@@ -24,6 +24,8 @@ PCID=`expr match "$hostname" 'na62farm\([0-9]*\).*'`
 
 IP=`expr match "\`nslookup ${hostname}-in | grep Address | tail -n 1\`" 'Address: \(.*\)'`
 
+# Copy all etc files
+yes | cp -af $scriptDir/etc/* /etc/
 
 # mount workspace and performance
 mkdir /workspace
@@ -82,9 +84,7 @@ fi
 ln -s /workspace/na62-farm/na62-farm.cfg /etc
 ln -s /workspace/na62-farm-dim-interface/na62-farm-dim.conf /etc
 
-
-# Copy all etc files
-yes | cp -af $scriptDir/etc/* /etc/
+chkconfig --add na62-startup
 
 chkconfig --add fmc
 chkconfig fmc on
