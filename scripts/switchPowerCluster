@@ -1,10 +1,12 @@
+read -p "First PC num: " first; echo
+read -p "Last PC num: " last; echo
 read -p "on/off/reset: " power; echo
 read -p "User: " user; echo
 stty -echo
 read -p "Password: " password; echo
 stty echo
 
-for i in `seq 1 9`
+for i in `seq $first $last`
 do
 	echo "na62farm$i:"
 	ipmitool -H na62farm$i-ipmi -U $user -P $password power $power

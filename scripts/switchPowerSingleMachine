@@ -1,8 +1,0 @@
-read -p "on/off/reset: " power; echo
-read -p "ipmi-hostname: " host; echo
-read -p "User: " user; echo
-stty -echo
-read -p "Password: " password; echo
-stty echo
-
-ipmitool -H $host -U $user -P $password power $power
