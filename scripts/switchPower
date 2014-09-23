@@ -1,3 +1,4 @@
+read -p "PC host prefix: " prefix; echo
 read -p "First PC num: " first; echo
 read -p "Last PC num: " last; echo
 read -p "on/off/reset: " power; echo
@@ -8,6 +9,6 @@ stty echo
 
 for i in `seq $first $last`
 do
-	echo "na62farm$i:"
-	ipmitool -H na62farm$i-ipmi -U $user -P $password power $power
+	echo "$prefix$i:"
+	ipmitool -H $prefix$i-ipmi -U $user -P $password power $power
 done

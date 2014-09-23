@@ -16,7 +16,6 @@ yum -y install htop bwm-ng graphviz gv
 cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -e 's/YUMUPDATE=1/YUMUPDATE=0/g' | sed -e 's/YUMMAIL=1/YUMMAIL=0/g' | sed -e 's/YUMMAILTO="root"/YUMMAILTO="kunzej@cern.ch"/g' > /etc/sysconfig/yum-autoupdate.tmp
 mv -f /etc/sysconfig/yum-autoupdate.tmp /etc/sysconfig/yum-autoupdate
 /sbin/chkconfig --add yum-autoupdate
-/sbin/service yum-autoupdate start
 
 
 hostname=`hostname`
@@ -85,14 +84,15 @@ ln -s /workspace/na62-farm/na62-farm.cfg /etc
 ln -s /workspace/na62-farm-dim-interface/na62-farm-dim.conf /etc
 
 chkconfig --add na62-startup
+chkconfig na62-startup on
 
 chkconfig --add fmc
 chkconfig fmc on
-service fmc start
 
 # Disable iptables
 chkconfig --level 12345 iptables off
-service iptables stop
 
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
+
+reboot
