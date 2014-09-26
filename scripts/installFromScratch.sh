@@ -29,8 +29,8 @@ yes | cp -af $scriptDir/etc/* /etc/
 # mount workspace and performance
 mkdir /workspace
 mkdir /performance
-echo "na62farm2:/workspace  /workspace        nfs     defaults        0 0" >> /etc/fstab
-echo "na62farm2:/performance        /performance    nfs     defaults  0 0" >> /etc/fstab
+echo "na62farmdev1:/workspace  /workspace        nfs     defaults        0 0" >> /etc/fstab
+echo "na62farmdev1:/performance        /performance    nfs     defaults  0 0" >> /etc/fstab
 mount -a
 
 

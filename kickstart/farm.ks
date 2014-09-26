@@ -75,7 +75,7 @@ logging --level=info
 reboot 
 
 # put any desired additional repositories here. They will appear later in the image at /etc/yum.repos.d
-#repo --name="NA62-Farm" --baseurl=http://na62farm2/farm-repo/
+#repo --name="NA62-Farm" --baseurl=http://na62farmdev1/farm-repo/
 #repo --name="SLC6 - os " --baseurl=http://linuxsoft.cern.ch/cern/slc6X/x86_64/yum/os/
 #repo --name="SLC6 - extras"    --baseurl=http://linuxsoft.cern.ch/cern/slc6X/x86_64/yum/extras/
 
@@ -175,15 +175,15 @@ restorecon /afs
 #
 yum -y install htop bwm-ng kernel-devel flex byacc openmotif-devel libstdc++.i686 ipmitool ncurses-libs.i686 
 
-yum-config-manager --add-repo http://na62farm2/farm-repo/
+yum-config-manager --add-repo http://na62farmdev1/farm-repo/
 yum --nogpgcheck -y install dim* FMC
 ################################################################################
 
 
 #################### SSH Keys ##############
-#enable logging from farm2 to this machine
+#enable logging from farmdev1 to this machine
 mkdir /root/.ssh
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA1j3kGkjAHTrLtblQsWztmHkALeN3mE9yC9qGzjjICBYm4Dal9fMS5rY+CPAcHr9si5I+bqDaoU7mWFbCIKYwmS4SsSMzneo9tL3hehQdDzaV9iygXZfgFxD27o+iq3ykOJI1JwnFX3SuWdRezfHRultl2MKFZOg1pOb/MjD+NFOiwVR2w3MUdktGuVhTLoK2cWFxPZ8WjcB58ktGIGuoO+JRtQscA2MWmZD8eqqzwaDa0wZ510myYfUW4pT5fZ6BCmLYGs98wBiOJI0RIt8KnxGwcMavUgscqUQpqOSIM44ermAd/FNEMgTV4sUhBy4XLDrxgFgFn286q3oIsf+s3w== root@na62farm2.cern.ch" >> /root/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA1j3kGkjAHTrLtblQsWztmHkALeN3mE9yC9qGzjjICBYm4Dal9fMS5rY+CPAcHr9si5I+bqDaoU7mWFbCIKYwmS4SsSMzneo9tL3hehQdDzaV9iygXZfgFxD27o+iq3ykOJI1JwnFX3SuWdRezfHRultl2MKFZOg1pOb/MjD+NFOiwVR2w3MUdktGuVhTLoK2cWFxPZ8WjcB58ktGIGuoO+JRtQscA2MWmZD8eqqzwaDa0wZ510myYfUW4pT5fZ6BCmLYGs98wBiOJI0RIt8KnxGwcMavUgscqUQpqOSIM44ermAd/FNEMgTV4sUhBy4XLDrxgFgFn286q3oIsf+s3w== root@na62farmdev1.cern.ch" >> /root/.ssh/authorized_keys
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAoHZUgnc7saF19XHMkz2f1NN3qAxTO99wdOGGZ5v+zENsH+l94buvx4lSVm/agVGAVlQ40RwHom4os25mzITXzHb2UVAUTNte/NO7N8nPG0ug69mhbUOtYiFHxA6RW1ABYqLtJ91Hwc3ZIsxUVnoNLiLqSgPtmnqmkW4jd+4fbkQL1Af2Ly2f6HKt6qbulmX0fZRdb/CAjmoOpfHX4P4uHPi6r0kSBG0SKgi3tWVynDCaHiZWPlCf1757OSs1N7Rs67Hhuy2aj1dO6e5AdBn+I5E7JyDOpoTr9nbJwhE2vIntHPdvdLS4v/Jf3J6od56GuKMxEuKc2aq75mpsdqyF8Q== kunzej@na62farmu2.cern.ch" >> /root/.ssh/authorized_keys
 
 ###########################################
