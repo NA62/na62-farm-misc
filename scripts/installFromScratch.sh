@@ -92,6 +92,9 @@ chkconfig fmc on
 # Disable iptables
 chkconfig --level 12345 iptables off
 
+# Disable audit (problems with pf_ring)
+chkconfig --del auditd
+
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
 

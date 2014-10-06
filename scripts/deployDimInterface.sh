@@ -1,3 +1,4 @@
+#!/bin/bash
 read -p "Version: " version; echo
 read -p "Debug/Release: " config; echo
 

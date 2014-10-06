@@ -11,4 +11,5 @@ for i in `seq $first $last`
 do
 	echo "$prefix$i:"
 	ipmitool -H $prefix$i-ipmi -U $user -P $password power $power
+	sleep 1
 done
