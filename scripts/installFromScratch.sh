@@ -92,6 +92,9 @@ chkconfig fmc on
 # Disable iptables
 chkconfig --level 12345 iptables off
 
+# disable selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+
 # Disable audit (problems with pf_ring)
 chkconfig --del auditd
 
