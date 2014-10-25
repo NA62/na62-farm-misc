@@ -19,8 +19,9 @@ mv -f /etc/sysconfig/yum-autoupdate.tmp /etc/sysconfig/yum-autoupdate
 hostname=`hostname`
 PCID=`expr match "$hostname" 'na62farm\([0-9]*\).*'`
 
-# Copy all etc files
+# Copy all etc and usr files
 yes | cp -af $scriptDir/etc/* /etc/
+yes | cp -af $scriptDir/usr/* /usr/
 
 # mount workspace and performance
 mkdir /workspace
@@ -67,5 +68,19 @@ chkconfig --del auditd
 
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
+
+# disable selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+
+#
+# Nagios (for Icinga server)
+#
+yum install megaraid-util-cli -y
+
+yum install nagios-plugins-* -y
+chkconfig --add nrpeq
+chkconfig nrpe on
+# the nrpe config is already copied to /etc/nagios
+
 
 reboot

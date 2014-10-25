@@ -101,4 +101,14 @@ chkconfig --del auditd
 # generate DIM start script used by FMC
 ln -s $scriptDir/startNA62FarmDimInterface.sh /usr/local/bin
 
+
+#
+# Nagios (for Icinga server)
+#
+
+yum install nagios-plugins-* -y
+chkconfig --add nrpe
+chkconfig nrpe on
+# the nrpe config is already copied to /etc/nagios
+
 reboot
