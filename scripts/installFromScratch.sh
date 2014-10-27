@@ -26,14 +26,6 @@ IP=`expr match "\`nslookup ${hostname}-in | grep Address | tail -n 1\`" 'Address
 # Copy all etc files
 yes | cp -af $scriptDir/etc/* /etc/
 
-# mount workspace and performance
-mkdir /workspace
-mkdir /performance
-echo "na62farmdev1:/workspace  /workspace        nfs     defaults        0 0" >> /etc/fstab
-echo "na62farmdev1:/performance        /performance    nfs     defaults  0 0" >> /etc/fstab
-mount -a
-
-
 # configure network devices
 if [ $installPf_ring -gt 0 ]
 then
@@ -56,6 +48,16 @@ echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev dna0" >> /etc/sysconfig/netw
 echo "route del -net 10.0.0.0 netmask 255.0.0.0 dev eth2" >> /etc/sysconfig/network-scripts/ifup-routes
 
 fi
+
+
+#
+# Autofs automount
+#
+echo "/-      /etc/auto.root  --timeout=60" >> /root/auto.master
+echo "/workspace      na62farmdev1:/workspace" > /root/auto.root
+echo "/performance    na62farmdev1:/performance" >> /root/auto.root
+service autofs restart
+
 
 #
 # Install .bashrc
@@ -110,5 +112,7 @@ yum install nagios-plugins-* -y
 chkconfig --add nrpe
 chkconfig nrpe on
 # the nrpe config is already copied to /etc/nagios
+
+
 
 reboot

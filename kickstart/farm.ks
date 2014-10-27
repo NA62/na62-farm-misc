@@ -60,7 +60,7 @@ part pv.01 --size=1    --ondisk sda --grow
 
 # use the rest of the disk for / and swap
 volgroup vg1 pv.01
-logvol /                 --vgname=vg1 --size=20000 --name=root
+logvol /                 --vgname=vg1 --size=80000 --name=root
 logvol /localscratch     --vgname=vg1 --size=1 --grow --name=localscratch
 logvol swap --vgname=vg1 --recommended --name=swap --fstype=swap
 ignoredisk --only-use=sda

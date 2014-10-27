@@ -23,12 +23,20 @@ PCID=`expr match "$hostname" 'na62farm\([0-9]*\).*'`
 yes | cp -af $scriptDir/etc/* /etc/
 yes | cp -af $scriptDir/usr/* /usr/
 
-# mount workspace and performance
-mkdir /workspace
-mkdir /performance
-echo "na62farmdev1:/workspace  /workspace        nfs     defaults        0 0" >> /etc/fstab
-echo "na62farmdev1:/performance        /performance    nfs     defaults  0 0" >> /etc/fstab
-mount -a
+#
+# Autofs automount
+#
+echo "/-      /etc/auto.root  --timeout=60
+/mnt    /etc/auto.mnt  --timeout=60" >> /root/auto.master
+
+echo "/workspace      na62farmdev1:/workspace
+/performance    na62farmdev1:/performance" >> /root/auto.root
+
+echo "merger1 na62merger1:/merger
+merger2 na62merger2:/merger
+merger3 na62merger3:/merger" > /root/auto.mnt
+
+service autofs restart
 
 
 #
@@ -81,6 +89,5 @@ yum install nagios-plugins-* -y
 chkconfig --add nrpeq
 chkconfig nrpe on
 # the nrpe config is already copied to /etc/nagios
-
 
 reboot
