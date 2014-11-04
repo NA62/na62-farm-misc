@@ -15,7 +15,7 @@ yum -y install htop bwm-ng graphviz gv
 # change autoupdate config so that it will only check for updates
 cat /etc/sysconfig/yum-autoupdate | sed -e 's/YUMONBOOT=1/YUMONBOOT=0/g' | sed -e 's/YUMUPDATE=1/YUMUPDATE=0/g' | sed -e 's/YUMMAIL=1/YUMMAIL=0/g' | sed -e 's/YUMMAILTO="root"/YUMMAILTO="kunzej@cern.ch"/g' > /etc/sysconfig/yum-autoupdate.tmp
 mv -f /etc/sysconfig/yum-autoupdate.tmp /etc/sysconfig/yum-autoupdate
-/sbin/chkconfig --add yum-autoupdate
+/sbin/chkconfig --del yum-autoupdate
 
 
 hostname=`hostname`
@@ -53,9 +53,10 @@ fi
 #
 # Autofs automount
 #
-echo "/-      /etc/auto.root  --timeout=60" >> /root/auto.master
-echo "/workspace      na62farmdev1:/workspace" > /root/auto.root
-echo "/performance    na62farmdev1:/performance" >> /root/auto.root
+echo "/-      /etc/auto.root  --timeout=60" >> /etc/auto.master
+echo "/workspace      na62farmdev1:/workspace" > /etc/auto.root
+echo "/performance    na62farmdev1:/performance" >> /etc/auto.root
+echo "/sw    na62farmdev1:/localscratch/sw" >> /etc/auto.root
 service autofs restart
 
 

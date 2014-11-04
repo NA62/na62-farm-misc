@@ -27,10 +27,12 @@ yes | cp -af $scriptDir/usr/* /usr/
 # Autofs automount
 #
 echo "/-      /etc/auto.root  --timeout=60
-/mnt    /etc/auto.mnt  --timeout=60" >> /root/auto.master
+/mnt    /etc/auto.mnt  --timeout=60" >> /etc/auto.master
 
 echo "/workspace      na62farmdev1:/workspace
-/performance    na62farmdev1:/performance" >> /root/auto.root
+/performance    na62farmdev1:/performance
+/sw	na62farmdev1:/localscratch/sw
+" >> /etc/auto.root
 
 echo "merger1 na62merger1:/merger
 merger2 na62merger2:/merger

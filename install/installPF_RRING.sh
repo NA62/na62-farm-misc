@@ -1,5 +1,5 @@
 #!/bin/bash
-compile=0
+compile=1
 yum install -y numactl-devel
 
 PF_RING_PATH=/performance/PF_RING
@@ -32,9 +32,9 @@ then
 fi
 
 cd $PF_RING_PATH/userland/lib
-./configure
 if [ $compile -gt 0 ]
 then
+	./configure
 	make -j
 fi
 
