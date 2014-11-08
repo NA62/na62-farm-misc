@@ -1,3 +1,4 @@
+read -p "PC base name: " base; echo
 read -p "First PC num: " first; echo
 read -p "Last PC num: " last; echo
 read -p "User: " user; echo
@@ -7,7 +8,7 @@ stty echo
 
 for i in `seq $first $last`
 do
-	ipmitool -H na62farm$i-ipmi -U $user -P $password chassis bootdev pxe
+	ipmitool -H $base$i-ipmi -U $user -P $password chassis bootdev pxe
 done
 
 #echo "starting na62merger"
