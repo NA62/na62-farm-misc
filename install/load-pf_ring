@@ -1,5 +1,5 @@
 #!/bin/bash
-numberOfQueues=2
+numberOfQueues=6
 
 if [ "$#" -gt "0" ]
 then
