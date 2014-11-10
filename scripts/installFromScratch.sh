@@ -53,10 +53,15 @@ fi
 #
 # Autofs automount
 #
-echo "/-      /etc/auto.root  --timeout=60" >> /etc/auto.master
-echo "/workspace      na62farmdev1:/workspace" > /etc/auto.root
-echo "/performance    na62farmdev1:/performance" >> /etc/auto.root
-echo "/sw    na62farmdev1:/localscratch/sw" >> /etc/auto.root
+echo "/-      /etc/auto.root  --timeout=60
+/mnt    /etc/auto.mnt  --timeout=60" >> /etc/auto.master
+
+echo "/workspace      na62farmdev1:/workspace
+/performance    na62farmdev1:/performance
+" >> /etc/auto.root
+
+echo "sw    na62farmdev1:/localscratch/sw" >> /etc/auto.mnt
+
 service autofs restart
 
 

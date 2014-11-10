@@ -31,12 +31,12 @@ echo "/-      /etc/auto.root  --timeout=60
 
 echo "/workspace      na62farmdev1:/workspace
 /performance    na62farmdev1:/performance
-/sw	na62farmdev1:/localscratch/sw
 " >> /etc/auto.root
 
 echo "merger1 na62merger1:/merger
 merger2 na62merger2:/merger
-merger3 na62merger3:/merger" > /root/auto.mnt
+merger3 na62merger3:/merger
+sw na62farmdev1:/localscratch/sw" > /root/auto.mnt
 
 service autofs restart
 
