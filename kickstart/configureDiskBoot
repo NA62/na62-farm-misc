@@ -3,7 +3,7 @@ stty -echo
 read -p "Password: " password; echo
 stty echo
 
-for i in `seq 10 30`
+for i in `seq 1 30`
 do
 	ipmitool -H na62farm$i-ipmi -U $user -P $password chassis bootdev disk
 done

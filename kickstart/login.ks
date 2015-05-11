@@ -173,7 +173,7 @@ restorecon /afs
 # Install missing packages. We cannot add them to the repo part at the top as we'd need epel in the 
 # repo list and this conflicts with the lcm installation (@cern-addons)
 #
-yum -y install htop bwm-ng kernel-devel flex byacc openmotif-devel libstdc++.i686 ipmitool ncurses-libs.i686 
+yum -y install git gitflow htop bwm-ng kernel-devel flex byacc openmotif-devel libstdc++.i686 ipmitool ncurses-libs.i686 
 yum -y install yum install svn mesa-libGLU-devel libXpm-devel libXi-devel expat-devel xrootd-client-libs
 
 yum-config-manager --add-repo http://na62farmdev1/farm-repo/
