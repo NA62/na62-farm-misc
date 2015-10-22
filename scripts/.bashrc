@@ -6,6 +6,12 @@ alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
+## Slim function for changing into a directiory (cd) and show it's content (ls)
+
+function cs () {
+    cd "$@" && ls
+    }
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
