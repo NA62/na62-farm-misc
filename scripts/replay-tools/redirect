@@ -35,7 +35,9 @@
 	#--endpoint=source:destination
 
 		#--enet-smac=00:25:90:ed:d5:6 --enet-dmac=00:25:90:eb:dc:e4		\
-	tcprewrite --endpoints=${IP1}:${IP2} --enet-smac=${MAC1} --enet-dmac=${MAC2} --infile=${FN}	--cachefile=${filename}.cache --outfile=REDIRECT_${FN}
+	OUTFILE=${filename}_FROM_${1}_TO_${2}_.pcap	
+	echo "Outfile: "${OUTFILE}
+	tcprewrite --endpoints=${IP1}:${IP2} --enet-smac=${MAC1} --enet-dmac=${MAC2} --infile=${FN}	--cachefile=${filename}.cache --outfile=${OUTFILE}
 
 #README
 #put the vanilla driver	then
