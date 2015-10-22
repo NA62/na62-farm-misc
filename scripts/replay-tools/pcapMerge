@@ -1,0 +1,63 @@
+#!/bin/bash
+
+	usage(){
+		HELP="
+		usage: ./pcapMerge directory_path_file
+		"
+		echo -e $HELP
+	}
+
+	# If no arguments are provided...
+	if [ $# -eq 0 ] ; then
+		usage
+		exit 1
+	fi 
+	#################
+	#parsing arguments
+
+	if [ $# == 1 ] ; then 
+	        fn="$1"
+	#	if [ $1 == '-l' ]; then
+	#		LIST="true"
+	#		EXECUTE="false"
+	#	elif [ $1 == "-h" ]; then
+	#		HELP="true"
+	#		EXECUTE="false"	
+	#		usage
+	#		exit 1
+	#	elif [ $1 == "--help" ]; then
+	#		HELP="true"
+	#		EXECUTE="false"	
+	#		usage
+	#		exit 1
+	#	fi
+		cd $1
+		#Fixing packets
+		for a in `ls`;	do 
+			#echo $a;
+			extension="${a##*.}"
+        		#filename="${fn%.*}"
+        		#echo $extension
+        		#echo $filename
+			if [ $extension == 'pcap' ] ; then
+				echo $a
+				#works on Fedora
+				#pcapfix -o fixed_$a $a
+				#works on ubuntu generate fixed_file.pcap
+				pcapfix $a
+			fi
+		done
+		#Merge all packets togheter
+		echo Merging:
+		ls | grep fixed_ 
+
+		#u need to use mergecap without the -a option. This will merge them chronologically based on packet timestamp.
+		mergecap -w mergedfile.pcap `ls | grep fixed_`
+		echo "Removing Transition fixed_ files"
+		rm `ls | grep fixed_` 
+	fi 
+	
+	#divide L0 from Kripton traffic
+	echo "Dividing traffic from L0 and Lkr"
+	tshark -r mergedfile.pcap -w L0_traffic.pcap  "udp.srcport==58913" 
+	tshark -r mergedfile.pcap -w LKr_traffic.pcap  "udp.srcport==58915" 
