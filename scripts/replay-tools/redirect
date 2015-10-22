@@ -1,0 +1,45 @@
+#!/bin/bash
+
+ usage(){
+     HELP="
+     usage: ./redirect source_na62farm1 desination_na62farmn file.pcap
+     "
+     echo -e $HELP
+ }
+
+ # If no arguments are provided...
+ if [ $# -lt 3 ] ; then
+     usage
+     exit 1
+ fi 
+
+ #################
+ #parsing arguments
+
+	MAC1=`grep $1 -r address | awk '{print $3}'`
+	IP1=`grep $1 -r address | awk '{print $4}'`
+	MAC2=`grep $2 -r address | awk '{print $3}'`
+	IP2=`grep $2 -r address | awk '{print $4}'`
+	
+	grep $1 -r address 
+	grep $2 -r address
+	
+	FN=$3
+	extension="${FN##*.}"
+	filename="${FN%.*}"
+	#mapping packets direction needed to change the ips	
+	#--mac has to be the machine mac that has recorded the packets 
+	#i am supposing to work on a machine that receive and resend packets
+	tcpprep --mac=$MAC1 --reverse --pcap=$FN --cachefile=${filename}.cache  
+
+	#--endpoint=source:destination
+
+		#--enet-smac=00:25:90:ed:d5:6 --enet-dmac=00:25:90:eb:dc:e4		\
+	tcprewrite --endpoints=${IP1}:${IP2} --enet-smac=${MAC1} --enet-dmac=${MAC2} --infile=${FN}	--cachefile=${filename}.cache --outfile=REDIRECT_${FN}
+
+#README
+#put the vanilla driver	then
+#tcpdump -i eth2 -w file.pcap
+#Convert ip and mac with this script
+#put the vanilla driver	then
+#tcpreplay --intf1=eth2 REDIRECT_file.pcap
