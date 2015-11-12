@@ -1,7 +1,7 @@
 #~/bin/sh
  usage(){
      HELP="
-     usage: ./replay.sh file.pcap
+     usage: ./rectcp.sh /performance/networkDump/filetorecord.pcap
      "
      echo -e $HELP
  }
@@ -12,4 +12,4 @@
      exit 1
  fi 
 
-tcpreplay --intf1=eth2 $1
+tcpdump -i eth2  -w $1
