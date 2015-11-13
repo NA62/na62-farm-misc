@@ -30,6 +30,11 @@
 	IP1=`nslookup ${HOSTNAME}-in | tail -n 2 | head -n 1 | awk '{print $2}'`
 
 	MAC2=`ssh $1 "cat /sys/class/net/dna0/address"`
+        if [ -z "$MAC2" ] ; then 
+            echo 'looking for eth2'
+	    MAC2=`ssh $1 "cat /sys/class/net/eth2/address"`
+        fi
+
 	IP2=`nslookup ${1}-in | tail -n 2 | head -n 1 | awk '{print $2}'`
 	
 	echo "MAC ${MAC1} IP ${IP1}"
@@ -41,7 +46,7 @@
 	#--mac has to be the machine mac that has recorded the packets 
 	#i am supposing to work on a machine that receive and resend packets
 
-	CACHEFILE=${filename}.cache
+	CACHEFILE=${filename}_FROM_${HOSTNAME}_TO_${1}_.cache
 	OUTFILE=${filename}_FROM_${HOSTNAME}_TO_${1}_.pcap
 	echo "Outfile: "${OUTFILE}
 	echo "Outfile: "${CACHEFILE}
